@@ -1,11 +1,9 @@
 import bpy
-import bgl
-import blf
 
 from .tile_marker import *
 from .materials import *
 from .dynamic_property import *
-from .gpencil import *
+from . import gpencil
 
 TILE_MATERIAL_KEY = "TILE_MATERIAL"
 
@@ -24,11 +22,13 @@ def is_map(obj):
 
 class TileMarkers(bpy.types.Operator):
     """Tile markers"""
-    bl_idname = "view3d.modal_operator"
-    bl_label = "RuneScape tile markers"
+    bl_idname = "wm.tilemarkers"
+    bl_label = "Tile markers"
     bl_options = {'REGISTER', 'UNDO'}
+    active_operator = None
 
     def __init__(self):
+        self.is_finished = False
         self.dive_stroke_mat = None
         self.dive_tile_mat = None
         self.surge_stroke_mat = None
@@ -38,23 +38,34 @@ class TileMarkers(bpy.types.Operator):
         self.erase_stroke_mat = None
         self.erase_tile_mat = None
         self.draw_brush = None
-        self.gpencil = None
 
     def invoke(self, context, event):
-        if context.area.type == 'VIEW_3D':
-            context.window_manager.modal_handler_add(self)
-
-            register_property(bpy.types.Material, "tile_marker_material")
-            register_property(bpy.types.Object, "is_tile_marker", False)
-
-            self.initialise_materials()
-            self.draw_brush = get_draw_brush()
-            self.gpencil = create_gpencil([self.dive_stroke_mat, self.surge_stroke_mat,
-                                   self.escape_stroke_mat, self.erase_stroke_mat])
-            return {'RUNNING_MODAL'}
-        else:
+        if TileMarkers.active_operator is not None:
+            TileMarkers.active_operator.finish()
+            
+        if gpencil.is_active():
+            bpy.ops.object.mode_set(mode='OBJECT')
+            TileMarkers.active_operator = None
+            return {'FINISHED'}
+            
+        if context.area.type != 'VIEW_3D':
             self.report({'WARNING'}, "View3D not found, cannot run operator")
             return {'CANCELLED'}
+        
+        context.window_manager.modal_handler_add(self)
+
+        register_property(bpy.types.Material, "tile_marker_material")
+        register_property(bpy.types.Object, "is_tile_marker", False)
+
+        self.initialise_materials()
+        self.draw_brush = gpencil.get_draw_brush()
+            
+        gpencil.setup([self.dive_stroke_mat, self.surge_stroke_mat,
+                       self.escape_stroke_mat, self.erase_stroke_mat])
+
+        TileMarkers.active_operator = self
+
+        return {'RUNNING_MODAL'}
 
     def initialise_materials(self):
         self.dive_stroke_mat, self.dive_tile_mat = get_materials("Dive", (1, 1, 0, 1))
@@ -63,25 +74,24 @@ class TileMarkers(bpy.types.Operator):
         self.erase_stroke_mat, self.erase_tile_mat = get_materials("Erase", (0.1, 0.1, 0.1, 1))
 
     def modal(self, context, event):
+        if self.is_finished:
+            return {'FINISHED'}
+        
         context.area.tag_redraw()
         obj = bpy.context.view_layer.objects.active
 
-        if event.type == 'ESC':
-            self.on_esc()
-
         # TODO: Move to a validation class
-        elif event.type == 'MOUSEMOVE' and obj is not None and obj.type == 'GPENCIL' and obj.mode == 'PAINT_GPENCIL':
+        if event.type == 'MOUSEMOVE' and obj is not None and obj == gpencil.object:
             gp_points_exist, map_locations, tile_markers = self.raycast_gpencil_points(obj)
 
             if gp_points_exist:
                 bpy.ops.gpencil.delete(type='POINTS')
-
-            self.handle_selected_objects(map_locations, tile_markers)
+                self.handle_selected_objects(map_locations, tile_markers)
 
         return {'PASS_THROUGH'}
 
     def handle_selected_objects(self, map_locations, tile_markers):
-        stroke_material = self.gpencil.active_material
+        stroke_material = gpencil.object.active_material
         tile_marker_material = stroke_material.tile_marker_material
         if tile_marker_material is not None:
             if stroke_material == self.erase_stroke_mat:
@@ -89,7 +99,7 @@ class TileMarkers(bpy.types.Operator):
             else:
                 create_markers(map_locations, tile_marker_material)
 
-            bpy.context.view_layer.objects.active = self.gpencil
+            bpy.context.view_layer.objects.active = gpencil.object
             bpy.ops.object.mode_set(mode='PAINT_GPENCIL')
 
     def raycast_gpencil_points(self, obj):
@@ -103,7 +113,7 @@ class TileMarkers(bpy.types.Operator):
                     for point in stroke.points:
                         gp_points_exist = True
                         point.select = True
-                        result, location, obj_hit = get_object_under_point(self.gpencil, point)
+                        result, location, obj_hit = gpencil.get_object_under_point(gpencil.object, point)
                         if result:
                             if is_map(obj_hit):
                                 map_locations.add(location)
@@ -112,7 +122,5 @@ class TileMarkers(bpy.types.Operator):
 
         return gp_points_exist, map_locations, tile_markers
 
-    @staticmethod
-    def on_esc():
-        bpy.ops.object.delete()
-        return {'CANCELLED'}
+    def finish(self):
+        self.is_finished = True

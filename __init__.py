@@ -25,8 +25,9 @@ def register():
 
 
 def register_keymaps():
-    keymaps = bpy.context.window_manager.keyconfigs.addon.keymaps.new(name='Tile markers', space_type='EMPTY')
+    keymaps = bpy.context.window_manager.keyconfigs.addon.keymaps.new(name='3D View', space_type='VIEW_3D')
     items = keymaps.keymap_items.new(TileMarkers.bl_idname, 'F9', 'PRESS', ctrl=True, shift=True)
+    items.active = True
     addon_keymaps.append((keymaps, items))
 
 
@@ -44,7 +45,3 @@ def unregister_keymaps():
 
 def menu_func(self, context):
     self.layout.operator(TileMarkers.bl_idname, text="Add tile markers", icon='PLUGIN')
-
-
-if __name__ == "__main__":
-    register()

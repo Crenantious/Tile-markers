@@ -4,8 +4,26 @@ from bpy_extras import view3d_utils
 
 GPENCIL_NAME = "Draw tile markers"
 TILE_SIZE = 2
+object = None
 
-def create_gpencil(materials):
+# TODO: rename
+def setup(materials):
+    global object
+    if object is None:
+        if GPENCIL_NAME in bpy.data.objects:
+            object = bpy.data.objects[GPENCIL_NAME]
+        else:
+            object = create(materials)
+    elif object not in bpy.context.scene.objects.values(): # object deleted
+        object = create(materials)
+
+    set_gpencil_active()
+
+def is_active():
+    global object
+    return object is not None and bpy.context.view_layer.objects.active == object and object in bpy.context.scene.objects.values() and bpy.context.object.mode == 'PAINT_GPENCIL'
+
+def create(materials):
     data = bpy.data.grease_pencils.new(GPENCIL_NAME)
     gpencil = bpy.data.objects.new(GPENCIL_NAME, data)
 
@@ -17,14 +35,15 @@ def create_gpencil(materials):
 
     for material in materials:
         data.materials.append(material)
-
-    bpy.context.view_layer.objects.active = gpencil
-    bpy.ops.object.select_all(action='DESELECT')
-    gpencil.select_set(True)
-    bpy.ops.object.mode_set(mode='PAINT_GPENCIL')
-
+    
     return gpencil
 
+def set_gpencil_active():
+    global object
+    bpy.context.view_layer.objects.active = object
+    bpy.ops.object.select_all(action='DESELECT')
+    object.select_set(True)
+    bpy.ops.object.mode_set(mode='PAINT_GPENCIL')
 
 def get_brush(name, blend):
     if name in bpy.data.brushes:

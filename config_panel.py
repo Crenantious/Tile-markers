@@ -4,19 +4,64 @@ import bpy.utils.previews
 icons = None
 property_group = None
 
+test_list = [1, 2, 3, 667]
+
 class ConfigPanel(bpy.types.Panel):
-    bl_label = "Tile markers"
+    bl_label = "Tile markers 1"
     bl_space_type = "VIEW_3D"
     bl_region_type = "UI"
+    bl_idname = "A_PT_aaaaaaaaa"
 
     def draw(self, context):
         layout = self.layout
+        #layout.popover(MaterialMenu.bl_idname, text="1")
+        #layout.menu(MaterialMenu.bl_idname, text="2")
+        #layout.menu_contents(MaterialMenu.bl_idname)
+        #layout.label(icon_value=icons["test_icon"].icon_id)
+        #layout.prop_with_menu(context.scene.property_group, 'material', menu=MaterialMenu.bl_idname)
+        row = layout.row()
+        row.template_list("Material_UI_LIST", "", context.object, "material_slots", context.object, "active_material_index")
+        column = row.column()
+        column.label(icon='ADD') # Make an operator
+        column.label(icon='REMOVE') # Make an operator
+        column.label(icon='TRIA_UP') # Make an operator
+        column.label(icon='TRIA_DOWN') # Make an operator
 
-        layout.label(icon_value=icons["test_icon"].icon_id)
+class Material_UI_LIST(bpy.types.UIList):
+    def draw_item(self, context, layout, data, item, icon, active_data, active_propname):
+        layout.label(text=item.name)
+        layout.label(icon='PREFERENCES') # Make an operator
+
+class MaterialPanel(bpy.types.Panel):
+    bl_label = "Tile markers 2"
+    bl_space_type = "VIEW_3D"
+    bl_region_type = "UI"
+    bl_idname = "D_PT_dddd"
+    is_popover = True
+
+    def draw(self, context):
+        layout = self.layout
+        layout.label(text='Stroke')
+        layout.label(text='Marker')
+        layout.prop(context.scene.property_group, 'material')
+
+class MaterialMenu(bpy.types.Menu):
+    bl_label = "Tile markers 3"
+    bl_space_type = "VIEW_3D"
+    bl_region_type = "UI"
+    bl_idname = "D_MT_ddddaaaaa"
+
+    def draw(self, context):
+       
+        layout = self.layout
+        layout.operator_context = 'EXEC_REGION_WIN'
+        layout.label(text='Stroke')
+        layout.label(text='Marker')
         layout.prop(context.scene.property_group, 'material')
 
 class ConfigPropertyGroup(bpy.types.PropertyGroup):
-    material: bpy.props.PointerProperty(type=bpy.types.Material, name="Material")
+    #stroke_material_label = bpy.props.StringProperty(name='stroke material')
+    material: bpy.props.PointerProperty(type=bpy.types.Material, name="Stroke material")
 
 
 # def do_update( self, context ):

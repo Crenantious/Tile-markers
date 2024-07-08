@@ -24,8 +24,10 @@ def register():
     bpy.types.Scene.property_group = bpy.props.PointerProperty(type=config_panel.ConfigPropertyGroup)
 
     bpy.utils.register_class(TileMarkers)
+    bpy.utils.register_class(config_panel.MaterialPanel)
+    bpy.utils.register_class(config_panel.Material_UI_LIST)
+    bpy.utils.register_class(config_panel.MaterialMenu)
     bpy.utils.register_class(config_panel.ConfigPanel)
-    
     bpy.types.VIEW3D_MT_object.append(menu_func)
     register_keymaps()
 
@@ -45,8 +47,11 @@ def unregister():
         bpy.utils.previews.remove(config_panel.icons)
 
     bpy.utils.unregister_class(TileMarkers)
-    bpy.utils.unregister_class(config_panel.OptionsPanel)
-    bpy.utils.unregister_class(config_panel.OptionsPropertyGroup)
+    bpy.utils.unregister_class(config_panel.ConfigPanel)
+    bpy.utils.unregister_class(config_panel.MaterialPanel)
+    bpy.utils.unregister_class(config_panel.MaterialMenu)
+    bpy.utils.unregister_class(config_panel.ConfigPropertyGroup)
+    bpy.utils.unregister_class(config_panel.Material_UI_LIST)
     try:
         del bpy.types.Scene.property_group
     except:

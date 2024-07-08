@@ -4,13 +4,17 @@ import bpy.utils.previews
 icons = None
 property_group = None
 
-test_list = [1, 2, 3, 667]
-
 class ConfigPanel(bpy.types.Panel):
     bl_label = "Tile markers 1"
     bl_space_type = "VIEW_3D"
     bl_region_type = "UI"
     bl_idname = "A_PT_aaaaaaaaa"
+    is_list_setup = False
+
+    def __init__(self):
+        if ConfigPanel.is_list_setup is False:
+            ConfigPanel.is_list_setup = True
+            bpy.context.scene.demo_list.add()
 
     def draw(self, context):
         layout = self.layout
@@ -20,7 +24,7 @@ class ConfigPanel(bpy.types.Panel):
         #layout.label(icon_value=icons["test_icon"].icon_id)
         #layout.prop_with_menu(context.scene.property_group, 'material', menu=MaterialMenu.bl_idname)
         row = layout.row()
-        row.template_list("Material_UI_LIST", "", context.object, "material_slots", context.object, "active_material_index")
+        row.template_list("Material_UI_LIST", "", context.scene, "demo_list", context.scene, "list_index")
         column = row.column()
         column.label(icon='ADD') # Make an operator
         column.label(icon='REMOVE') # Make an operator
@@ -29,7 +33,7 @@ class ConfigPanel(bpy.types.Panel):
 
 class Material_UI_LIST(bpy.types.UIList):
     def draw_item(self, context, layout, data, item, icon, active_data, active_propname):
-        layout.label(text=item.name)
+        layout.prop(item, "material")
         layout.label(icon='PREFERENCES') # Make an operator
 
 class MaterialPanel(bpy.types.Panel):
@@ -52,7 +56,6 @@ class MaterialMenu(bpy.types.Menu):
     bl_idname = "D_MT_ddddaaaaa"
 
     def draw(self, context):
-       
         layout = self.layout
         layout.operator_context = 'EXEC_REGION_WIN'
         layout.label(text='Stroke')

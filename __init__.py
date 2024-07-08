@@ -15,13 +15,16 @@ bl_info = {
     "doc_url": "",
 }
 
-
 addon_keymaps = []
 
 def register():
     load_icons()
+
     bpy.utils.register_class(config_panel.ConfigPropertyGroup)
     bpy.types.Scene.property_group = bpy.props.PointerProperty(type=config_panel.ConfigPropertyGroup)
+
+    bpy.types.Scene.demo_list = bpy.props.CollectionProperty(type = config_panel.ConfigPropertyGroup)
+    bpy.types.Scene.list_index = bpy.props.IntProperty(name = "Index for demo_list", default = 0)
 
     bpy.utils.register_class(TileMarkers)
     bpy.utils.register_class(config_panel.MaterialPanel)

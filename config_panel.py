@@ -1,5 +1,6 @@
 import bpy
 import bpy.utils.previews
+from . import edit_marker_type_operator as emt
 
 icons = None
 property_group = None
@@ -14,7 +15,7 @@ class ConfigPanel(bpy.types.Panel):
     def __init__(self):
         if ConfigPanel.is_list_setup is False:
             ConfigPanel.is_list_setup = True
-            bpy.context.scene.demo_list.add()
+            #bpy.context.scene.demo_list.add()
 
     def draw(self, context):
         layout = self.layout
@@ -32,9 +33,20 @@ class ConfigPanel(bpy.types.Panel):
         column.label(icon='TRIA_DOWN') # Make an operator
 
 class Material_UI_LIST(bpy.types.UIList):
-    def draw_item(self, context, layout, data, item, icon, active_data, active_propname):
-        layout.prop(item, "material")
-        layout.label(icon='PREFERENCES') # Make an operator
+    def draw_item(self, context, layout, data, item, icon, active_data, active_propname, index):
+        column = layout.column()
+        rowOne = column.row()
+        rowTwo = column.row()
+
+        rowOne.label(text=item.name)
+        op = rowOne.operator(emt.EditMarkerType.bl_idname, text="", icon='TRIA_DOWN')
+        op.marker_type_index = index
+
+        if item.edit_mode:
+            box = rowTwo.split(factor=0.02)
+            box.label()
+            box = box.box()
+            box.prop(item, 'material')
 
 class MaterialPanel(bpy.types.Panel):
     bl_label = "Tile markers 2"
@@ -61,11 +73,6 @@ class MaterialMenu(bpy.types.Menu):
         layout.label(text='Stroke')
         layout.label(text='Marker')
         layout.prop(context.scene.property_group, 'material')
-
-class ConfigPropertyGroup(bpy.types.PropertyGroup):
-    #stroke_material_label = bpy.props.StringProperty(name='stroke material')
-    material: bpy.props.PointerProperty(type=bpy.types.Material, name="Stroke material")
-
 
 # def do_update( self, context ):
 #     if context.active_object:

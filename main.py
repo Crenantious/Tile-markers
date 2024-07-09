@@ -22,7 +22,7 @@ def is_map(obj):
 
 class TileMarkers(bpy.types.Operator):
     """Tile markers"""
-    bl_idname = "wm.tilemarkers"
+    bl_idname = "tile_markers.tile_markers"
     bl_label = "Tile markers"
     bl_options = {'REGISTER', 'UNDO'}
     active_operator = None

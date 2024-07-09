@@ -4,7 +4,7 @@ from .main import TileMarkers
 from .dynamic_property import *
 from . import config_panel
 from . import marker_type
-from . import edit_marker_type_operator as emt
+from . import marker_type_list_operators as list_operators
 
 bl_info = {
     "name": "Tile marker",
@@ -20,25 +20,26 @@ bl_info = {
 addon_keymaps = []
 
 def register():
-    load_icons()
-
     bpy.utils.register_class(marker_type.MarkerType)
-    bpy.types.Scene.property_group = bpy.props.PointerProperty(type=marker_type.MarkerType)
 
+    # TODO: put in a universal place
     bpy.types.Scene.marker_types = bpy.props.CollectionProperty(type = marker_type.MarkerType)
     bpy.types.Scene.marker_types_index = bpy.props.IntProperty(name = "Index for marker_types", default = 0)
 
     bpy.utils.register_class(TileMarkers)
+
+    bpy.utils.register_class(list_operators.AddMarkerType)
+    bpy.utils.register_class(list_operators.RemoveMarkerType)
+    bpy.utils.register_class(list_operators.MoveMarkerTypeUp)
+    bpy.utils.register_class(list_operators.MoveMarkerTypeDown)
+
     bpy.utils.register_class(config_panel.EditTileMarkerTypePanel)
     bpy.utils.register_class(config_panel.Material_UI_LIST)
-    bpy.utils.register_class(emt.EditMarkerType)
     bpy.utils.register_class(config_panel.TileMarkerTypesPanel)
-    bpy.types.VIEW3D_MT_object.append(menu_func)
-    register_keymaps()
 
-def load_icons():
-    config_panel.icons = bpy.utils.previews.new()
-    config_panel.icons.load("test_icon", "Icon.png", 'IMAGE')
+    bpy.types.VIEW3D_MT_object.append(menu_func)
+
+    register_keymaps()
 
 def register_keymaps():
     keymaps = bpy.context.window_manager.keyconfigs.addon.keymaps.new(name='3D View', space_type='VIEW_3D')
@@ -48,19 +49,19 @@ def register_keymaps():
 
 
 def unregister():
-    if config_panel.icons is not None:
-        bpy.utils.previews.remove(config_panel.icons)
+    bpy.utils.unregister_class(config_panel.TileMarkerTypesPanel)
+    bpy.utils.unregister_class(config_panel.Material_UI_LIST)
+    bpy.utils.unregister_class(config_panel.EditTileMarkerTypePanel)
+
+    
+    bpy.utils.unregister_class(list_operators.AddMarkerType)
+    bpy.utils.unregister_class(list_operators.RemoveMarkerType)
+    bpy.utils.unregister_class(list_operators.MoveMarkerTypeUp)
+    bpy.utils.unregister_class(list_operators.MoveMarkerTypeDown)
 
     bpy.utils.unregister_class(TileMarkers)
-    bpy.utils.unregister_class(config_panel.TileMarkerTypesPanel)
-    bpy.utils.unregister_class(emt.EditMarkerType)
-    bpy.utils.unregister_class(config_panel.EditTileMarkerTypePanel)
     bpy.utils.unregister_class(marker_type.MarkerType)
-    bpy.utils.unregister_class(config_panel.Material_UI_LIST)
-    try:
-        del bpy.types.Scene.property_group
-    except:
-        pass
+
     bpy.types.VIEW3D_MT_object.remove(menu_func)
     unregister_keymaps()
 

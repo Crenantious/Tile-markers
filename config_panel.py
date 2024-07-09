@@ -1,6 +1,5 @@
 import bpy
-import bpy.utils.previews
-from . import edit_marker_type_operator as emt
+from . import marker_type_list_operators as list_operators
 
 class TileMarkerTypesPanel(bpy.types.Panel):
     bl_label = "Tile marker types"
@@ -13,17 +12,16 @@ class TileMarkerTypesPanel(bpy.types.Panel):
     def __init__(self):
         if TileMarkerTypesPanel.is_list_setup is False:
             TileMarkerTypesPanel.is_list_setup = True
-            #bpy.context.scene.marker_types.add()
 
     def draw(self, context):
         layout = self.layout
         row = layout.row()
         row.template_list("Material_UI_LIST", "", context.scene, "marker_types", context.scene, "marker_types_index")
         column = row.column()
-        column.label(icon='ADD') # Make an operator
-        column.label(icon='REMOVE') # Make an operator
-        column.label(icon='TRIA_UP') # Make an operator
-        column.label(icon='TRIA_DOWN') # Make an operator
+        column.operator(list_operators.AddMarkerType.bl_idname, text="", icon='ADD')
+        column.operator(list_operators.RemoveMarkerType.bl_idname, text="", icon='REMOVE')
+        column.operator(list_operators.MoveMarkerTypeUp.bl_idname, text="", icon='TRIA_UP')
+        column.operator(list_operators.MoveMarkerTypeDown.bl_idname, text="", icon='TRIA_DOWN')
 
 class Material_UI_LIST(bpy.types.UIList):
     def draw_item(self, context, layout, data, item, icon, active_data, active_propname, index):

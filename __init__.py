@@ -25,15 +25,14 @@ def register():
     bpy.utils.register_class(marker_type.MarkerType)
     bpy.types.Scene.property_group = bpy.props.PointerProperty(type=marker_type.MarkerType)
 
-    bpy.types.Scene.demo_list = bpy.props.CollectionProperty(type = marker_type.MarkerType)
-    bpy.types.Scene.list_index = bpy.props.IntProperty(name = "Index for demo_list", default = 0)
+    bpy.types.Scene.marker_types = bpy.props.CollectionProperty(type = marker_type.MarkerType)
+    bpy.types.Scene.marker_types_index = bpy.props.IntProperty(name = "Index for marker_types", default = 0)
 
     bpy.utils.register_class(TileMarkers)
-    bpy.utils.register_class(config_panel.MaterialPanel)
+    bpy.utils.register_class(config_panel.EditTileMarkerTypePanel)
     bpy.utils.register_class(config_panel.Material_UI_LIST)
-    bpy.utils.register_class(config_panel.MaterialMenu)
     bpy.utils.register_class(emt.EditMarkerType)
-    bpy.utils.register_class(config_panel.ConfigPanel)
+    bpy.utils.register_class(config_panel.TileMarkerTypesPanel)
     bpy.types.VIEW3D_MT_object.append(menu_func)
     register_keymaps()
 
@@ -53,10 +52,9 @@ def unregister():
         bpy.utils.previews.remove(config_panel.icons)
 
     bpy.utils.unregister_class(TileMarkers)
-    bpy.utils.unregister_class(config_panel.ConfigPanel)
+    bpy.utils.unregister_class(config_panel.TileMarkerTypesPanel)
     bpy.utils.unregister_class(emt.EditMarkerType)
-    bpy.utils.unregister_class(config_panel.MaterialPanel)
-    bpy.utils.unregister_class(config_panel.MaterialMenu)
+    bpy.utils.unregister_class(config_panel.EditTileMarkerTypePanel)
     bpy.utils.unregister_class(marker_type.MarkerType)
     bpy.utils.unregister_class(config_panel.Material_UI_LIST)
     try:

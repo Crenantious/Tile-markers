@@ -9,6 +9,6 @@ class EditMarkerType(bpy.types.Operator):
     marker_type_index: bpy.props.IntProperty()
 
     def execute(self, context):
-        mt = context.scene.demo_list[self.marker_type_index]
+        mt = context.scene.marker_types[self.marker_type_index]
         mt.edit_mode = not mt.edit_mode
         return {'FINISHED'}

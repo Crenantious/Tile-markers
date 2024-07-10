@@ -1,4 +1,5 @@
 import bpy
+from .tile_marker_types import marker_types
 
 class AddMarkerType(bpy.types.Operator):
     """Add marker type"""
@@ -12,8 +13,8 @@ class AddMarkerType(bpy.types.Operator):
         return True
     
     def execute(self, context):
-        context.scene.marker_types.add()
-        context.scene.marker_types_index = len(context.scene.marker_types) - 1
+        marker_types.add()
+        marker_types.index.set_to_end()
         return {'FINISHED'}
 
 class RemoveMarkerType(bpy.types.Operator):
@@ -24,11 +25,10 @@ class RemoveMarkerType(bpy.types.Operator):
 
     @classmethod
     def poll(cls, context):
-        return is_index_in_range(context)
+        return marker_types.get_active_item() is not None
 
     def execute(self, context):
-        context.scene.marker_types.remove(context.scene.marker_types_index)
-        clamp_index(context)
+        marker_types.remove_current()
         return {'FINISHED'}
     
 class MoveMarkerTypeUp(bpy.types.Operator):
@@ -39,13 +39,10 @@ class MoveMarkerTypeUp(bpy.types.Operator):
 
     @classmethod
     def poll(cls, context):
-        return context.scene.marker_types_index > 0
+        return marker_types.index.value > 0
 
     def execute(self, context):
-        index = context.scene.marker_types_index
-
-        context.scene.marker_types.move(index, index - 1)
-        context.scene.marker_types_index -= 1
+        marker_types.move_up()
         return {'FINISHED'}
 
 class MoveMarkerTypeDown(bpy.types.Operator):
@@ -53,22 +50,11 @@ class MoveMarkerTypeDown(bpy.types.Operator):
     bl_idname = "tile_markers.move_marker_type_down"
     bl_label = "Move marker type down"
     bl_options = {'INTERNAL', 'UNDO'}
-
+    
     @classmethod
     def poll(cls, context):
-        return context.scene.marker_types_index < len(context.scene.marker_types) - 1
-    
+        return marker_types.index.value < marker_types.index.max
+
     def execute(self, context):
-        index = context.scene.marker_types_index
-        
-        context.scene.marker_types.move(index, index + 1)
-        context.scene.marker_types_index += 1
+        marker_types.move_down()
         return {'FINISHED'}
-
-def clamp_index(context):
-    index, length = context.scene.marker_types_index, len(context.scene.marker_types)
-    context.scene.marker_types_index = max(0, min(index, length - 1))
-
-def is_index_in_range(context):
-    index, length = context.scene.marker_types_index, len(context.scene.marker_types)
-    return index >=0 and index < length

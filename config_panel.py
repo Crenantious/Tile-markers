@@ -1,5 +1,6 @@
 import bpy
 from . import marker_type_list_operators as list_operators
+from .tile_marker_types import marker_types
 
 class TileMarkerTypesPanel(bpy.types.Panel):
     bl_label = "Tile marker types"
@@ -16,7 +17,7 @@ class TileMarkerTypesPanel(bpy.types.Panel):
     def draw(self, context):
         layout = self.layout
         row = layout.row()
-        row.template_list("Material_UI_LIST", "", context.scene, "marker_types", context.scene, "marker_types_index")
+        row.template_list("Material_UI_LIST", "", bpy.context.scene, "marker_types", bpy.context.scene, "marker_types_index")
         column = row.column()
         column.operator(list_operators.AddMarkerType.bl_idname, text="", icon='ADD')
         column.operator(list_operators.RemoveMarkerType.bl_idname, text="", icon='REMOVE')
@@ -35,11 +36,12 @@ class EditTileMarkerTypePanel(bpy.types.Panel):
     bl_order = 0
 
     def draw(self, context):
-        if context.scene.marker_types_index >= len(context.scene.marker_types):
+        layout = self.layout
+        item = marker_types.get_active_item()
+        
+        if item is None:
             return
         
-        layout = self.layout
-        item = context.scene.marker_types[context.scene.marker_types_index]
         layout.prop(item, 'name')
         layout.prop(item, 'stroke_material')
         layout.prop(item, 'marker_material')

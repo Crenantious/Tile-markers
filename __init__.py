@@ -22,9 +22,8 @@ addon_keymaps = []
 def register():
     bpy.utils.register_class(marker_type.MarkerType)
 
-    # TODO: put in a universal place
-    bpy.types.Scene.marker_types = bpy.props.CollectionProperty(type = marker_type.MarkerType)
-    bpy.types.Scene.marker_types_index = bpy.props.IntProperty(name = "Index for marker_types", default = 0)
+    from . import tile_marker_types
+    tile_marker_types.init()
 
     bpy.utils.register_class(TileMarkers)
 

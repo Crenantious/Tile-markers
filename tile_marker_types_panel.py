@@ -1,5 +1,5 @@
 import bpy
-from . import marker_type_list_operators as list_operators
+from . import tile_marker_type_list_operators as list_operators
 from .tile_marker_types import marker_types
 
 class TileMarkerTypesPanel(bpy.types.Panel):

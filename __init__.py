@@ -2,9 +2,9 @@ import bpy
 
 from .main import TileMarkers
 from .dynamic_property import *
-from . import config_panel
-from . import marker_type
-from . import marker_type_list_operators as list_operators
+from . import tile_marker_types_panel
+from . import tile_marker_type
+from . import tile_marker_type_list_operators as list_operators
 
 bl_info = {
     "name": "Tile marker",
@@ -20,7 +20,7 @@ bl_info = {
 addon_keymaps = []
 
 def register():
-    bpy.utils.register_class(marker_type.MarkerType)
+    bpy.utils.register_class(tile_marker_type.TileMarkerType)
 
     from . import tile_marker_types
     tile_marker_types.init()
@@ -32,9 +32,9 @@ def register():
     bpy.utils.register_class(list_operators.MoveMarkerTypeUp)
     bpy.utils.register_class(list_operators.MoveMarkerTypeDown)
 
-    bpy.utils.register_class(config_panel.EditTileMarkerTypePanel)
-    bpy.utils.register_class(config_panel.Material_UI_LIST)
-    bpy.utils.register_class(config_panel.TileMarkerTypesPanel)
+    bpy.utils.register_class(tile_marker_types_panel.EditTileMarkerTypePanel)
+    bpy.utils.register_class(tile_marker_types_panel.Material_UI_LIST)
+    bpy.utils.register_class(tile_marker_types_panel.TileMarkerTypesPanel)
 
     bpy.types.VIEW3D_MT_object.append(menu_func)
 
@@ -48,9 +48,9 @@ def register_keymaps():
 
 
 def unregister():
-    bpy.utils.unregister_class(config_panel.TileMarkerTypesPanel)
-    bpy.utils.unregister_class(config_panel.Material_UI_LIST)
-    bpy.utils.unregister_class(config_panel.EditTileMarkerTypePanel)
+    bpy.utils.unregister_class(tile_marker_types_panel.TileMarkerTypesPanel)
+    bpy.utils.unregister_class(tile_marker_types_panel.Material_UI_LIST)
+    bpy.utils.unregister_class(tile_marker_types_panel.EditTileMarkerTypePanel)
 
     
     bpy.utils.unregister_class(list_operators.AddMarkerType)
@@ -59,7 +59,7 @@ def unregister():
     bpy.utils.unregister_class(list_operators.MoveMarkerTypeDown)
 
     bpy.utils.unregister_class(TileMarkers)
-    bpy.utils.unregister_class(marker_type.MarkerType)
+    bpy.utils.unregister_class(tile_marker_type.TileMarkerType)
 
     bpy.types.VIEW3D_MT_object.remove(menu_func)
     unregister_keymaps()

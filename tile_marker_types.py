@@ -1,5 +1,5 @@
 import bpy
-from . import marker_type
+from . import tile_marker_type
 
 class Index:
     @property
@@ -76,5 +76,5 @@ class TileMarkerTypes:
 marker_types = TileMarkerTypes()
 
 def init():
-    bpy.types.Scene.marker_types = bpy.props.CollectionProperty(type = marker_type.MarkerType)
+    bpy.types.Scene.marker_types = bpy.props.CollectionProperty(type = tile_marker_type.TileMarkerType)
     bpy.types.Scene.marker_types_index = bpy.props.IntProperty(name = "Index for marker_types", default = 0)

@@ -43,6 +43,10 @@ def get_object_under_point(gpencil, point):
 
 def handle_selected_objects(gpencil, map_locations, tile_markers):
     stroke_material = gpencil.object.active_material
+
+    if stroke_material is None:
+        return
+
     tile_marker_material = stroke_material.tile_marker_material
     if tile_marker_material is not None:
         if stroke_material == gpencil.erase_material:

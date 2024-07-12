@@ -24,7 +24,7 @@ def register():
 
     from . import tile_marker_types
     tile_marker_types.init()
-
+    
     bpy.utils.register_class(TileMarkers)
 
     bpy.utils.register_class(list_operators.AddMarkerType)

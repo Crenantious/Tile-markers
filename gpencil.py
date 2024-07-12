@@ -4,6 +4,17 @@ from .tile_marker_types import marker_types
 
 GPENCIL_NAME = "Draw tile markers"
 
+__gpencil = None
+
+def __getattr__(name):
+    if name == 'gpencil':
+        global __gpencil
+        if __gpencil is None:
+            __gpencil = GPencil()
+        return __gpencil
+    
+    raise AttributeError(f"module '{__name__}' has no attribute '{name}'")
+
 class GPencil:
     def __init__(self):
         bpy.types.Scene.gpencil = bpy.props.PointerProperty(type = bpy.types.Object, name = "gpencil")
@@ -73,8 +84,3 @@ class GPencil:
         brush.use_pressure_strength = False
         bpy.data.brushes.create_gpencil_data(brush)
         return brush
-
-def get_existing_object():
-    if GPENCIL_NAME in bpy.data.objects:
-        return bpy.data.objects[GPENCIL_NAME]
-    return None

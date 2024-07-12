@@ -18,20 +18,20 @@ class TileMarkers(bpy.types.Operator):
         self.validation = TileMarkersValidation()
 
     def invoke(self, context, event):
-        self.validation.validate_area()
+        self.validation.validate_area(context)
         self.validation.validate_active_operator()
         self.validation.validate_gpencil()
         if self.validation.error is not None:
             return self.validation.error
-    
-    def execute(self, context, event):
+        
         context.window_manager.modal_handler_add(self)
 
         register_property(bpy.types.Object, "is_tile_marker", False)
             
-        if TileMarkers.gpencil is None:
-            TileMarkers.gpencil = GPencil()
+        #if TileMarkers.gpencil is None:
+        TileMarkers.gpencil = GPencil()
 
+        TileMarkers.gpencil.set_object_active()
         TileMarkers.active_operator = self
 
         return {'RUNNING_MODAL'}    
@@ -42,7 +42,7 @@ class TileMarkers(bpy.types.Operator):
         
         context.area.tag_redraw()
         
-        if self.validation.validate_modal_event() is False:
+        if self.validation.validate_modal_event(event) is False:
             return {'PASS_THROUGH'}
         
         gp_points_exist, map_locations, tile_markers = object_selection.raycast_gpencil_points(TileMarkers.gpencil)
@@ -65,14 +65,15 @@ class TileMarkersValidation:
             self.report({'WARNING'}, "View3D not found, cannot run operator")
             self.__try_set_error('CANCELLED')
     
-    def validate_active_operator(slf):
+    def validate_active_operator(self):
         if TileMarkers.active_operator is not None:
             TileMarkers.active_operator.finish()
+            TileMarkers.active_operator = None
     
     def validate_gpencil(self):
-        if TileMarkers.gpencil is not None and TileMarkers.gpencil.is_object_active():
+        gpencil = TileMarkers.gpencil
+        if gpencil is not None and gpencil.object_exists() and gpencil.is_object_active() and gpencil.is_mode_correct():
             bpy.ops.object.mode_set(mode='OBJECT')
-            TileMarkers.active_operator = None
             self.__try_set_error('FINISHED')
     
     def validate_modal_event(self, event):
@@ -80,5 +81,5 @@ class TileMarkersValidation:
         return event.type == 'MOUSEMOVE' and obj is not None and obj == TileMarkers.gpencil.object
 
     def __try_set_error(self, error):
-        if self.error is not None:
+        if self.error is None:
             self.error = {error}

@@ -1,12 +1,7 @@
 import bpy
 
+# TODO: put into config/preferences
 TILE_SIZE = 2
-
-
-def create_markers(locations, material):
-    for location in locations:
-        TileMarker(location, material)
-
 
 class TileMarker:
     def __init__(self, location, material):
@@ -38,3 +33,7 @@ class TileMarker:
         bpy.ops.object.mode_set(mode='EDIT')
         bpy.ops.mesh.delete(type='VERT')
         bpy.ops.object.mode_set(mode='OBJECT')
+
+def create_markers(locations, material):
+    for location in locations:
+        TileMarker(location, material)

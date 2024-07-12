@@ -11,8 +11,9 @@ class GPencil:
         else:
             self.object = existing_gpencil_object
             
+        self.brush = self.setup_brush()
         self.set_materials()
-        self.setup_brush()
+        self.erase_material = None
 
     def set_materials(self):
         self.object.data.materials.clear()

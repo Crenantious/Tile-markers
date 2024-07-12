@@ -18,15 +18,15 @@ def __getattr__(name):
 class GPencil:
     def __init__(self):
         bpy.types.Scene.gpencil = bpy.props.PointerProperty(type = bpy.types.Object, name = "gpencil")
-        self.object = bpy.context.scene.gpencil
 
-        self.brush = self.setup_brush()
-        self.set_materials()
+        self.object = bpy.context.scene.gpencil
         self.erase_material = None
 
     def create(self):
         self.object, self.data = self.__create()
         bpy.context.scene.gpencil = self.object
+        self.brush = self.setup_brush()
+        self.set_materials()
 
     def __create(self):
         data = bpy.data.grease_pencils.new(GPENCIL_NAME)
@@ -58,16 +58,16 @@ class GPencil:
         return brush
     
     def set_materials(self):
-        #self.object.material_slots.clear()
+        self.data.materials.clear()
         self.materials = {}
 
         for marker_type in marker_types.types:
-            stroke, marker = marker_type.stroke_material, marker_type.marker_material
+            stroke, marker = marker_type.gpencil_material, marker_type.marker_material
             if stroke is None or marker is None:
                 continue # Notify user of error
 
             self.materials[stroke] = marker
-            self.data.materials.append(marker)
+            self.data.materials.append(stroke)
 
     def set_object_active(self):
         bpy.context.view_layer.objects.active = self.object

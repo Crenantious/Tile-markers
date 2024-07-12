@@ -1,4 +1,5 @@
 import bpy
+
 from . import tile_marker_type_list_operators as list_operators
 from .tile_marker_types import marker_types
 
@@ -7,12 +8,7 @@ class TileMarkerTypesPanel(bpy.types.Panel):
     bl_space_type = "VIEW_3D"
     bl_region_type = "UI"
     bl_idname = "VIEW3D_PT_tile_marker_types"
-    is_list_setup = False # For testing only
-    bl_order = 1
-
-    def __init__(self):
-        if TileMarkerTypesPanel.is_list_setup is False:
-            TileMarkerTypesPanel.is_list_setup = True
+    bl_order = 0
 
     def draw(self, context):
         layout = self.layout
@@ -33,7 +29,7 @@ class EditTileMarkerTypePanel(bpy.types.Panel):
     bl_space_type = "VIEW_3D"
     bl_region_type = "UI"
     bl_idname = "VIEW3D_PT_edit_tile_marker_type"
-    bl_order = 0
+    bl_order = 1
 
     def draw(self, context):
         layout = self.layout
@@ -43,5 +39,5 @@ class EditTileMarkerTypePanel(bpy.types.Panel):
             return
         
         layout.prop(item, 'name')
-        layout.prop(item, 'stroke_material')
+        layout.prop(item, 'gpencil_material')
         layout.prop(item, 'marker_material')

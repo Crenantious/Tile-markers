@@ -1,6 +1,6 @@
 import bpy
 
-from .main import TileMarkers
+from .TileMarkers import TileMarkers
 from .dynamic_property import *
 from . import tile_marker_types_panel
 from . import tile_marker_type
@@ -20,6 +20,8 @@ bl_info = {
 addon_keymaps = []
 
 def register():
+    register_property(bpy.types.Object, "is_tile_marker", False)
+    
     bpy.utils.register_class(tile_marker_type.TileMarkerType)
 
     from . import tile_marker_types

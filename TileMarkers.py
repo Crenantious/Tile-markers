@@ -1,7 +1,6 @@
 import bpy
 
 from .materials import *
-from .dynamic_property import *
 from . import gpencil as gp
 from . import object_selection
 from .validation import *
@@ -31,10 +30,6 @@ class TileMarkers(bpy.types.Operator):
             return errors
         
         context.window_manager.modal_handler_add(self)
-
-        register_property(bpy.types.Object, "is_tile_marker", False)
-            
-        gp.gpencil
 
         gp.gpencil.set_object_active()
         TileMarkers.active_operator = self

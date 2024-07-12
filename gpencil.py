@@ -18,17 +18,45 @@ def __getattr__(name):
 class GPencil:
     def __init__(self):
         bpy.types.Scene.gpencil = bpy.props.PointerProperty(type = bpy.types.Object, name = "gpencil")
+        self.object = bpy.context.scene.gpencil
 
-        if bpy.context.scene.gpencil is None:
-            self.object, self.data = self.__create()
-            bpy.context.scene.gpencil = self.object
-        else:
-            self.object = bpy.context.scene.gpencil
-            
         self.brush = self.setup_brush()
         self.set_materials()
         self.erase_material = None
 
+    def create(self):
+        self.object, self.data = self.__create()
+        bpy.context.scene.gpencil = self.object
+
+    def __create(self):
+        data = bpy.data.grease_pencils.new(GPENCIL_NAME)
+        gpencil = bpy.data.objects.new(GPENCIL_NAME, data)
+
+        bpy.context.scene.collection.objects.link(gpencil)
+        bpy.context.scene.tool_settings.gpencil_stroke_placement_view3d = 'SURFACE'
+
+        gpencil.data.layers.new("Draw")
+        gpencil.data.layers[0].frames.new(0, active=True)
+        
+        return gpencil, data
+
+    def setup_brush(self):
+        brush = self.get_brush('Draw tiles', 'ADD')
+        bpy.context.scene.tool_settings.gpencil_paint.brush = brush
+        return brush
+    
+    def get_brush(self, name, blend):
+        if name in bpy.data.brushes:
+            brush = bpy.data.brushes[name]
+        else:
+            brush = bpy.data.brushes.new(name, mode='PAINT_GPENCIL')
+
+        brush.use_paint_grease_pencil = True
+        brush.blend = blend
+        brush.use_pressure_strength = False
+        bpy.data.brushes.create_gpencil_data(brush)
+        return brush
+    
     def set_materials(self):
         #self.object.material_slots.clear()
         self.materials = {}
@@ -43,16 +71,12 @@ class GPencil:
 
     def set_object_active(self):
         bpy.context.view_layer.objects.active = self.object
+        bpy.ops.object.mode_set(mode='OBJECT')
         bpy.ops.object.select_all(action='DESELECT')
         self.object.select_set(True)
         bpy.ops.object.mode_set(mode='PAINT_GPENCIL')
 
-    def setup_brush(self):
-        brush = self.get_brush('Draw tiles', 'ADD')
-        bpy.context.scene.tool_settings.gpencil_paint.brush = brush
-        return brush
-    
-    def object_exists(self):
+    def does_object_exist(self):
         return self.object in bpy.context.scene.objects.values()
     
     def is_object_active(self):
@@ -60,27 +84,3 @@ class GPencil:
     
     def is_mode_correct(self):
         return bpy.context.object.mode == 'PAINT_GPENCIL'
-
-    def __create(self):
-        data = bpy.data.grease_pencils.new(GPENCIL_NAME)
-        gpencil = bpy.data.objects.new(GPENCIL_NAME, data)
-
-        bpy.context.scene.collection.objects.link(gpencil)
-        bpy.context.scene.tool_settings.gpencil_stroke_placement_view3d = 'SURFACE'
-
-        gpencil.data.layers.new("Draw")
-        gpencil.data.layers[0].frames.new(0, active=True)
-        
-        return gpencil, data
-
-    def get_brush(self, name, blend):
-        if name in bpy.data.brushes:
-            brush = bpy.data.brushes[name]
-        else:
-            brush = bpy.data.brushes.new(name, mode='PAINT_GPENCIL')
-
-        brush.use_paint_grease_pencil = True
-        brush.blend = blend
-        brush.use_pressure_strength = False
-        bpy.data.brushes.create_gpencil_data(brush)
-        return brush

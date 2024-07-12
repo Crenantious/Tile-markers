@@ -1,6 +1,3 @@
-import bpy
-from . import gpencil as gp
-
 class Validators:
     def __init__(self):
         self.validators = []
@@ -35,24 +32,3 @@ class Validator:
 
     def set_args(self, *args):
         self.args = args
-
-def validate_area(context):
-    if context.area.type != 'VIEW_3D':
-        #self.report({'WARNING'}, "View3D not found, cannot run operator")
-        return 'CANCELLED'  
-
-active_operator = None
-def validate_active_operator():
-    global active_operator
-    if active_operator is not None:
-        active_operator.finish()
-        active_operator = None
-
-def validate_gpencil():
-    if gp.gpencil.object_exists() and gp.gpencil.is_object_active() and gp.gpencil.is_mode_correct():
-        bpy.ops.object.mode_set(mode='OBJECT')
-        return 'FINISHED'
-
-def validate_modal_event(event):
-    obj = bpy.context.view_layer.objects.active
-    return event.type == 'MOUSEMOVE' and obj is not None and obj == gp.gpencil.object

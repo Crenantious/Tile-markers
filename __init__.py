@@ -9,7 +9,7 @@ from . import tile_marker_type_list_operators as list_operators
 bl_info = {
     "name": "Tile marker",
     "author": "Crenantious",
-    "version": (1, 0),
+    "version": (0, 1),
     "blender": (3, 2, 0),
     "location": "View3D > Add > Mesh > Tile markers",
     "description": "Generates tile markers on an object based on the generated grease pencil.",

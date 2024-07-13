@@ -1,6 +1,10 @@
 import bpy
 from . import tile_marker_type
 
+def init():
+    bpy.types.Scene.marker_types = bpy.props.CollectionProperty(type = tile_marker_type.TileMarkerType)
+    bpy.types.Scene.marker_types_index = bpy.props.IntProperty(name = "Index for marker_types", default = 0)
+
 class Index:
     @property
     def value(self):
@@ -74,7 +78,3 @@ class TileMarkerTypes:
         self.index.increment()
     
 marker_types = TileMarkerTypes()
-
-def init():
-    bpy.types.Scene.marker_types = bpy.props.CollectionProperty(type = tile_marker_type.TileMarkerType)
-    bpy.types.Scene.marker_types_index = bpy.props.IntProperty(name = "Index for marker_types", default = 0)

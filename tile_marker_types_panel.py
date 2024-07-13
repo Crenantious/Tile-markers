@@ -2,6 +2,7 @@ import bpy
 
 from . import tile_marker_type_list_operators as list_operators
 from .tile_marker_types import marker_types
+from . import gpencil as gp
 
 class TileMarkerTypesPanel(bpy.types.Panel):
     bl_label = "Tile marker types"
@@ -19,6 +20,8 @@ class TileMarkerTypesPanel(bpy.types.Panel):
         column.operator(list_operators.RemoveMarkerType.bl_idname, text="", icon='REMOVE')
         column.operator(list_operators.MoveMarkerTypeUp.bl_idname, text="", icon='TRIA_UP')
         column.operator(list_operators.MoveMarkerTypeDown.bl_idname, text="", icon='TRIA_DOWN')
+  
+        layout.prop(gp.gpencil.erase_material, 'material', text = "Erase material")
 
 class Material_UI_LIST(bpy.types.UIList):
     def draw_item(self, context, layout, data, item, icon, active_data, active_propname, index):

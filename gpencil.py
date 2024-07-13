@@ -1,7 +1,7 @@
 import bpy
 
 from .tile_marker_types import marker_types
-
+from . import erase_material as em
 GPENCIL_NAME = "Draw tile markers"
 
 __gpencil = None
@@ -15,12 +15,14 @@ def __getattr__(name):
     
     raise AttributeError(f"module '{__name__}' has no attribute '{name}'")
 
+def init():
+    bpy.types.Scene.gpencil = bpy.props.PointerProperty(type = bpy.types.Object, name = "gpencil")
+    bpy.types.Scene.erase_material = bpy.props.PointerProperty(type = em.EraseMaterial, name = "erase_material")
+
 class GPencil:
     def __init__(self):
-        bpy.types.Scene.gpencil = bpy.props.PointerProperty(type = bpy.types.Object, name = "gpencil")
-
         self.object = bpy.context.scene.gpencil
-        self.erase_material = None
+        self.erase_material = bpy.context.scene.erase_material
 
     def create(self):
         self.object, self.data = self.__create()
@@ -68,6 +70,9 @@ class GPencil:
 
             self.materials[stroke] = marker
             self.data.materials.append(stroke)
+        
+        if self.erase_material.material is not None:
+            self.data.materials.append(self.erase_material.material)
 
     def set_object_active(self):
         bpy.context.view_layer.objects.active = self.object

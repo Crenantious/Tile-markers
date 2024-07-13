@@ -5,6 +5,8 @@ from .dynamic_property import *
 from . import tile_marker_types_panel
 from . import tile_marker_type
 from . import tile_marker_type_list_operators as list_operators
+from . import erase_material
+from . import gpencil
 
 bl_info = {
     "name": "Tile marker",
@@ -23,9 +25,11 @@ def register():
     register_property(bpy.types.Object, "is_tile_marker", False)
     
     bpy.utils.register_class(tile_marker_type.TileMarkerType)
-
+    bpy.utils.register_class(erase_material.EraseMaterial)
+    
     from . import tile_marker_types
     tile_marker_types.init()
+    gpencil.init()
     
     bpy.utils.register_class(TileMarkers)
 
@@ -39,7 +43,7 @@ def register():
     bpy.utils.register_class(tile_marker_types_panel.TileMarkerTypesPanel)
 
     bpy.types.VIEW3D_MT_object.append(menu_func)
-
+    
     register_keymaps()
 
 def register_keymaps():

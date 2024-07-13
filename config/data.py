@@ -4,37 +4,37 @@ from . import tile_marker_type
 from . import tile_marker_types
 from . import erase_material as em
 
+__properties = {}
+
 def init():
     bpy.types.Scene.gpencil = bpy.props.PointerProperty(type = bpy.types.Object, name = "gpencil")
     bpy.types.Scene.erase_material = bpy.props.PointerProperty(type = em.EraseMaterial, name = "erase_material")
     bpy.types.Scene.marker_types = bpy.props.CollectionProperty(type = tile_marker_type.TileMarkerType)
     bpy.types.Scene.marker_types_index = bpy.props.IntProperty(name = "Index for marker_types", default = 0)
 
-class Data:
-    def __init__(self):
-        self.gpencil_object = None
-        self.erase_material = None
-        self.marker_types = None
+    class Property:
+        def __init__(self, name, getter):
+            self.value = None
+            self.name = name
+            self.getter = getter
+        
+        def set_value(self):
+            self.value = self.getter()
 
-__data = Data()
-__gpencil_object = None
-__erase_material = None
-__marker_types = None
+    def add_property(name, getter):
+        global __properties
+        __properties[name] = Property(name, getter)
+        
+    add_property("gpencil_object", lambda: bpy.context.scene.gpencil)
+    add_property("erase_material", lambda: bpy.context.scene.erase_material)
+    add_property("marker_types", lambda: tile_marker_types.TileMarkerTypes())
+    add_property("gpencil_object", lambda: bpy.context.scene.gpencil)
 
 def __getattr__(name):
-    def gpencil_object():
-        return bpy.context.scene.gpencil
-
-    def erase_material():
-        return bpy.context.scene.erase_material
-
-    def marker_types():
-        return tile_marker_types.TileMarkerTypes()
-    
-    var_map = {'gpencil_object': gpencil_object, 'erase_material': erase_material, 'marker_types': marker_types}
-    if name in var_map:
-        if getattr(__data, name) is None:
-            setattr(__data, name, var_map[name]())
-        return getattr(__data, name)
+    if name in __properties:
+        property = __properties[name]
+        if property.value is None:
+            property.set_value()
+        return property.value
     
     raise AttributeError(f"module '{__name__}' has no attribute '{name}'")

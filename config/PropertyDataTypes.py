@@ -9,7 +9,7 @@ def is_marker_material(self, object):
 # TODO: consider validating the names are unique
 class TileMarkerType(bpy.types.PropertyGroup):
     name: bpy.props.StringProperty(name="Name", default="name")
-    gpencil_material: bpy.props.PointerProperty(type=bpy.types.Material, name="GPencil material", poll = is_gpencil_material,
+    gpencil_material: bpy.props.PointerProperty(type=bpy.types.Material, name="Draw material", poll = is_gpencil_material,
                                                 description = "The gpencil material used to indicate where to create tile markers with the corresponding 'marker material' below")
     marker_material: bpy.props.PointerProperty(type=bpy.types.Material, name="Marker material", poll = is_marker_material,
                                                description = "The material added to the tile marker that was created using the above 'gpencil material'")

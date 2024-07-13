@@ -78,4 +78,4 @@ def unregister_keymaps():
 
 
 def menu_func(self, context):
-    self.layout.operator(TileMarkers.bl_idname, text="Add tile markers", icon='PLUGIN')
+    self.layout.operator(TileMarkers.bl_idname, text="Tile markers", icon='PLUGIN')

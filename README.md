@@ -1,5 +1,8 @@
 # Tile markers
 
+## Installation
+Download this repository as a zip ('<> code' button) then install the zip as an addon through Blender (Edit > Preferences > Add-ons > Install)
+
 ## Activation
 Activate the addon by pressing the keybind (default: ctrl + shift + F9) or the button (Object > Tile markers).
 
@@ -15,14 +18,14 @@ The pencil will have two types of materials: stroke and erase.
 Drawing will check each object that was drawn over and then delete the strokes.
 
 For each location under the stroke the following must be met:
-    To create a tile marker:
+    - To create a tile marker:
         - The 'map' object must be specified in the config panel.
         - The front object at the location must be the 'map'; another object could be in front, blocking it from the pencil's view.
         - The material used must be a 'stroke' material and must have an associated 'marker' material to use for the marker (configurable).
         - Another tile cannot have been created at the location during the current stroke (to prevent duplicates).
         - The location must be a multiple of the tile size (configurable), acting like a grid starting from (0, 0, 0).
 
-    To delete a tile marker:
+    - To delete a tile marker:
         - The front object at the location must be a tile marker (created by the addon); another object could be in front, blocking it from the pencil's view.
         - The material used must be the 'erase' material.
 

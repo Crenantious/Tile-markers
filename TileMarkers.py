@@ -36,7 +36,7 @@ class TileMarkers(bpy.types.Operator):
         return {'RUNNING_MODAL'}
 
     def modal(self, context, event):
-        TileMarkers.modal_validators.validators[0].set_args(self, event)
+        TileMarkers.modal_validators.validators[0].set_args(self, context, event)
         errors = TileMarkers.modal_validators.validate()
         if len(errors) > 0:
             return errors

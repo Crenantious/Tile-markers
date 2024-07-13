@@ -1,4 +1,5 @@
 import bpy
+
 from bpy_extras import view3d_utils
 from . import tile_marker
 from .config import data
@@ -51,7 +52,8 @@ def handle_selected_objects(gpencil, map_locations, tile_markers):
 
     if stroke_material in gpencil.materials:
         tile_marker_material = gpencil.materials[stroke_material]
-        tile_marker.create_markers(map_locations, tile_marker_material)
+        for location in map_locations:
+            tile_marker.TileMarker(location, tile_marker_material)
 
     bpy.context.view_layer.objects.active = gpencil.object
     bpy.ops.object.mode_set(mode='PAINT_GPENCIL')

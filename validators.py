@@ -25,11 +25,14 @@ def validate_gpencil():
     gp.gpencil.set_object_active()
     bpy.ops.object.mode_set(mode='PAINT_GPENCIL')
 
-def validate_modal_event(self, event):
+def validate_modal_event(self, context, event):
     if self.is_finished:
         return 'FINISHED'
     
-    if event.type == 'MOUSEMOVE' and gp.gpencil.is_object_active() and gp.gpencil.is_object_active():
+    if context.area is None or context.area.type != 'VIEW_3D':
+        return 'PASS_THROUGH'
+
+    if event.type == 'MOUSEMOVE' and gp.gpencil.does_object_exist() and gp.gpencil.is_object_active():
         return
 
     return 'PASS_THROUGH'

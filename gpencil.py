@@ -17,7 +17,7 @@ def __getattr__(name):
 
 class GPencil:
     def __init__(self):
-        self.object = data.data.gpencil_object
+        self.object = data.gpencil_object
 
     def create(self):
         self.object, self.gpencil_data = self.__create()
@@ -58,7 +58,7 @@ class GPencil:
         self.gpencil_data.materials.clear()
         self.materials = {}
 
-        for marker_type in data.data.marker_types.types:
+        for marker_type in data.marker_types.types:
             stroke, marker = marker_type.gpencil_material, marker_type.marker_material
             if stroke is None or marker is None:
                 continue # Notify user of error
@@ -66,8 +66,8 @@ class GPencil:
             self.materials[stroke] = marker
             self.gpencil_data.materials.append(stroke)
         
-        if data.data.erase_material.material is not None:
-            self.gpencil_data.materials.append(data.data.erase_material.material)
+        if data.erase_material.material is not None:
+            self.gpencil_data.materials.append(data.erase_material.material)
 
     def set_object_active(self):
         bpy.context.view_layer.objects.active = self.object

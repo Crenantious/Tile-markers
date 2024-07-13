@@ -3,11 +3,9 @@ import bpy
 from .TileMarkers import TileMarkers
 from .dynamic_property import *
 from .config import tile_marker_types_panel
-from .config import data
 from .config import tile_marker_type
 from . import tile_marker_type_list_operators as list_operators
 from .config import erase_material
-from . import gpencil
 
 bl_info = {
     "name": "Tile marker",
@@ -24,14 +22,9 @@ addon_keymaps = []
 
 def register():
     register_property(bpy.types.Object, "is_tile_marker", False)
-    
+
     bpy.utils.register_class(tile_marker_type.TileMarkerType)
     bpy.utils.register_class(erase_material.EraseMaterial)
-
-    from .config import tile_marker_types
-    data.ConfigData.init()
-    #tile_marker_types.init()
-    #gpencil.init()
     
     bpy.utils.register_class(TileMarkers)
 
@@ -46,6 +39,9 @@ def register():
 
     bpy.types.VIEW3D_MT_object.append(menu_func)
     
+    from .config import data
+    data.init()
+
     register_keymaps()
 
 def register_keymaps():
@@ -60,13 +56,13 @@ def unregister():
     bpy.utils.unregister_class(tile_marker_types_panel.Material_UI_LIST)
     bpy.utils.unregister_class(tile_marker_types_panel.EditTileMarkerTypePanel)
 
-    
     bpy.utils.unregister_class(list_operators.AddMarkerType)
     bpy.utils.unregister_class(list_operators.RemoveMarkerType)
     bpy.utils.unregister_class(list_operators.MoveMarkerTypeUp)
     bpy.utils.unregister_class(list_operators.MoveMarkerTypeDown)
 
     bpy.utils.unregister_class(TileMarkers)
+    bpy.utils.unregister_class(erase_material.EraseMaterial)
     bpy.utils.unregister_class(tile_marker_type.TileMarkerType)
 
     bpy.types.VIEW3D_MT_object.remove(menu_func)

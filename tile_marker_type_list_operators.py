@@ -14,8 +14,8 @@ class AddMarkerType(bpy.types.Operator):
         return True
     
     def execute(self, context):
-        data.data.marker_types.add()
-        data.data.marker_types.index.set_to_end()
+        data.marker_types.add()
+        data.marker_types.index.set_to_end()
         return {'FINISHED'}
 
 class RemoveMarkerType(bpy.types.Operator):
@@ -26,10 +26,10 @@ class RemoveMarkerType(bpy.types.Operator):
 
     @classmethod
     def poll(cls, context):
-        return data.data.marker_types.get_active_item() is not None
+        return data.marker_types.get_active_item() is not None
 
     def execute(self, context):
-        data.data.marker_types.remove_current()
+        data.marker_types.remove_current()
         return {'FINISHED'}
     
 class MoveMarkerTypeUp(bpy.types.Operator):
@@ -40,10 +40,10 @@ class MoveMarkerTypeUp(bpy.types.Operator):
 
     @classmethod
     def poll(cls, context):
-        return data.data.marker_types.index.value > 0
+        return data.marker_types.index.value > 0
 
     def execute(self, context):
-        data.data.marker_types.move_up()
+        data.marker_types.move_up()
         return {'FINISHED'}
 
 class MoveMarkerTypeDown(bpy.types.Operator):
@@ -54,8 +54,8 @@ class MoveMarkerTypeDown(bpy.types.Operator):
     
     @classmethod
     def poll(cls, context):
-        return data.data.marker_types.index.value < data.data.marker_types.index.max
+        return data.marker_types.index.value < data.marker_types.index.max
 
     def execute(self, context):
-        data.data.marker_types.move_down()
+        data.marker_types.move_down()
         return {'FINISHED'}

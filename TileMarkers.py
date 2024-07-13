@@ -1,6 +1,5 @@
 import bpy
 
-from .materials import *
 from . import gpencil as gp
 from . import object_selection
 from .validation import *

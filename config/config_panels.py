@@ -15,6 +15,7 @@ class ConfigPanel(PanelInfo, bpy.types.Panel):
 
     def draw(self, context):
         self.layout.prop_with_label("Tile size", data.config_data, 'tile_size')
+        self.layout.prop_with_label("Map", data.config_data, 'map')
 
 class MaterialsPanel(PanelInfo, bpy.types.Panel):
     bl_label = "Materials"

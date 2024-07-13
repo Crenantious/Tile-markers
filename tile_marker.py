@@ -12,7 +12,7 @@ class TileMarker:
         self.object.data.materials.append(material)
         self.object.is_tile_marker = True
 
-        self.bool_intersect(bpy.data.objects["Map"])
+        self.bool_intersect(data.config_data.map)
         self.delete_excess_verts()
 
     def bool_intersect(self, floor):

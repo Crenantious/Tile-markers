@@ -65,7 +65,7 @@ def get_nearest_tile(pos):
     return get_nearest_tile_vertex(pos.x), get_nearest_tile_vertex(pos.y), get_nearest_tile_vertex(pos.z)
 
 def is_map(obj):
-    return obj == bpy.data.objects["Map"]
+    return obj == data.config_data.map
 
 def delete_objects(objs):
     bpy.ops.object.mode_set(mode='OBJECT')

@@ -1,10 +1,11 @@
 import bpy
+
 from . import gpencil as gp
 from .validation import *
+from .config import data
 
 def validate_area(context):
     if context.area.type != 'VIEW_3D':
-        #self.report({'WARNING'}, "View3D not found, cannot run operator")
         return 'CANCELLED'  
 
 active_operator = None
@@ -25,12 +26,16 @@ def validate_gpencil():
     gp.gpencil.set_object_active()
     bpy.ops.object.mode_set(mode='PAINT_GPENCIL')
 
-def validate_modal_event(self, context, event):
+def validate_modal_event(self, context, event, op):
     if self.is_finished:
         return 'FINISHED'
     
     if context.area is None or context.area.type != 'VIEW_3D':
         return 'PASS_THROUGH'
+    
+    if  data.config_data.map is None:
+        op.report({'ERROR'}, "map object must be set")
+        return 'CANCELLED'
 
     if event.type == 'MOUSEMOVE' and gp.gpencil.does_object_exist() and gp.gpencil.is_object_active():
         return

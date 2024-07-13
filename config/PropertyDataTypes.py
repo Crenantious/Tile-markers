@@ -21,3 +21,4 @@ class DataGroup(bpy.types.PropertyGroup):
     marker_types: bpy.props.CollectionProperty(type = TileMarkerType)
     marker_types_index: bpy.props.IntProperty(name = "Index for marker_types", default = 0)
     tile_size: bpy.props.FloatProperty(name = "Tile width and height", default = 0)
+    map: bpy.props.PointerProperty(type = bpy.types.Object, name = "map", description = "The object to generae tile markers from.")

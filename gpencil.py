@@ -17,13 +17,17 @@ def __getattr__(name):
 
 class GPencil:
     def __init__(self):
-        self.object = data.gpencil_object
+        self.create(data.config_data.gpencil)
 
-    def create(self):
-        self.object, self.gpencil_data = self.__create()
-        data.gpencil_object = self.object
+    def create(self, existing_object = None):
+        if existing_object is None:
+            self.object = self.__create()
+        else:
+            self.object = existing_object
+
+        data.config_data.gpencil = self.object
         self.materials = {}
-        self.brush = self.setup_brush()
+        self.brush = self.setup_brush() # TODO: Probably don't need a brush
         self.set_materials()
 
     def __create(self):
@@ -36,7 +40,7 @@ class GPencil:
         gpencil.data.layers.new("Draw")
         gpencil.data.layers[0].frames.new(0, active=True)
         
-        return gpencil, gpencil_data
+        return gpencil
 
     def setup_brush(self):
         brush = self.get_brush('Draw tiles', 'ADD')
@@ -56,7 +60,7 @@ class GPencil:
         return brush
     
     def set_materials(self):
-        self.gpencil_data.materials.clear()
+        self.object.data.materials.clear()
         self.materials = {}
 
         for marker_type in data.marker_types.types:
@@ -65,10 +69,10 @@ class GPencil:
                 continue # Notify user of error
 
             self.materials[stroke] = marker
-            self.gpencil_data.materials.append(stroke)
+            self.object.data.materials.append(stroke)
         
         if data.config_data.erase_material is not None:
-            self.gpencil_data.materials.append(data.config_data.erase_material)
+            self.object.data.materials.append(data.config_data.erase_material)
 
     def set_object_active(self):
         bpy.context.view_layer.objects.active = self.object

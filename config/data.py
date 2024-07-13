@@ -23,8 +23,9 @@ def init():
     def data():
         return bpy.context.scene.tile_markers_config_data
 
-    add_property("gpencil_object", lambda: data().gpencil)
-    add_property("erase_material", lambda: data().erase_material)
+    # TODO: use __settr__ and make all properties like this work
+    #add_property("gpencil_object", lambda: data().gpencil)
+    #add_property("erase_material", lambda: data().erase_material)
 
 # TODO: add __setattr__
 def __getattr__(name):

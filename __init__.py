@@ -2,10 +2,11 @@ import bpy
 
 from .TileMarkers import TileMarkers
 from .dynamic_property import *
-from . import tile_marker_types_panel
-from . import tile_marker_type
+from .config import tile_marker_types_panel
+from .config import data
+from .config import tile_marker_type
 from . import tile_marker_type_list_operators as list_operators
-from . import erase_material
+from .config import erase_material
 from . import gpencil
 
 bl_info = {
@@ -26,10 +27,11 @@ def register():
     
     bpy.utils.register_class(tile_marker_type.TileMarkerType)
     bpy.utils.register_class(erase_material.EraseMaterial)
-    
-    from . import tile_marker_types
-    tile_marker_types.init()
-    gpencil.init()
+
+    from .config import tile_marker_types
+    data.ConfigData.init()
+    #tile_marker_types.init()
+    #gpencil.init()
     
     bpy.utils.register_class(TileMarkers)
 

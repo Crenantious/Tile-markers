@@ -1,7 +1,7 @@
 import bpy
 
-from .tile_marker_types import marker_types
-from . import erase_material as em
+from .config import data
+
 GPENCIL_NAME = "Draw tile markers"
 
 __gpencil = None
@@ -15,24 +15,19 @@ def __getattr__(name):
     
     raise AttributeError(f"module '{__name__}' has no attribute '{name}'")
 
-def init():
-    bpy.types.Scene.gpencil = bpy.props.PointerProperty(type = bpy.types.Object, name = "gpencil")
-    bpy.types.Scene.erase_material = bpy.props.PointerProperty(type = em.EraseMaterial, name = "erase_material")
-
 class GPencil:
     def __init__(self):
-        self.object = bpy.context.scene.gpencil
-        self.erase_material = bpy.context.scene.erase_material
+        self.object = data.data.gpencil_object
 
     def create(self):
-        self.object, self.data = self.__create()
+        self.object, self.gpencil_data = self.__create()
         bpy.context.scene.gpencil = self.object
         self.brush = self.setup_brush()
         self.set_materials()
 
     def __create(self):
-        data = bpy.data.grease_pencils.new(GPENCIL_NAME)
-        gpencil = bpy.data.objects.new(GPENCIL_NAME, data)
+        gpencil_data = bpy.data.grease_pencils.new(GPENCIL_NAME)
+        gpencil = bpy.data.objects.new(GPENCIL_NAME, gpencil_data)
 
         bpy.context.scene.collection.objects.link(gpencil)
         bpy.context.scene.tool_settings.gpencil_stroke_placement_view3d = 'SURFACE'
@@ -40,7 +35,7 @@ class GPencil:
         gpencil.data.layers.new("Draw")
         gpencil.data.layers[0].frames.new(0, active=True)
         
-        return gpencil, data
+        return gpencil, gpencil_data
 
     def setup_brush(self):
         brush = self.get_brush('Draw tiles', 'ADD')
@@ -60,19 +55,19 @@ class GPencil:
         return brush
     
     def set_materials(self):
-        self.data.materials.clear()
+        self.gpencil_data.materials.clear()
         self.materials = {}
 
-        for marker_type in marker_types.types:
+        for marker_type in data.data.marker_types.types:
             stroke, marker = marker_type.gpencil_material, marker_type.marker_material
             if stroke is None or marker is None:
                 continue # Notify user of error
 
             self.materials[stroke] = marker
-            self.data.materials.append(stroke)
+            self.gpencil_data.materials.append(stroke)
         
-        if self.erase_material.material is not None:
-            self.data.materials.append(self.erase_material.material)
+        if data.data.erase_material.material is not None:
+            self.gpencil_data.materials.append(data.data.erase_material.material)
 
     def set_object_active(self):
         bpy.context.view_layer.objects.active = self.object

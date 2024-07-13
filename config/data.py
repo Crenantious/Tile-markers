@@ -25,6 +25,7 @@ def init():
 
     add_property("gpencil_object", lambda: data().gpencil)
     add_property("erase_material", lambda: data().erase_material)
+    add_property("tile_size", lambda: data().tile_size)
 
 def __getattr__(name):
     if name == "config_data":

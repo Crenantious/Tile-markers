@@ -36,9 +36,10 @@ def register():
     bpy.utils.register_class(list_operators.MoveMarkerTypeUp)
     bpy.utils.register_class(list_operators.MoveMarkerTypeDown)
 
-    bpy.utils.register_class(config_panels.EditTileMarkerTypePanel)
+    bpy.utils.register_class(config_panels.ConfigPanel)
     bpy.utils.register_class(config_panels.Material_UI_LIST)
-    bpy.utils.register_class(config_panels.TileMarkerTypesPanel)
+    bpy.utils.register_class(config_panels.MaterialsPanel)
+    bpy.utils.register_class(config_panels.EditTileMarkerTypePanel)
 
     bpy.types.VIEW3D_MT_object.append(menu_func)
 
@@ -52,9 +53,10 @@ def register_keymaps():
 
 
 def unregister():
-    bpy.utils.unregister_class(config_panels.TileMarkerTypesPanel)
+    bpy.utils.unregister_class(config_panels.MaterialsPanel)
     bpy.utils.unregister_class(config_panels.Material_UI_LIST)
     bpy.utils.unregister_class(config_panels.EditTileMarkerTypePanel)
+    bpy.utils.unregister_class(config_panels.ConfigPanel)
 
     bpy.utils.unregister_class(list_operators.AddMarkerType)
     bpy.utils.unregister_class(list_operators.RemoveMarkerType)

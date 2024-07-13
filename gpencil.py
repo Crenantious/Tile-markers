@@ -22,6 +22,7 @@ class GPencil:
     def create(self):
         self.object, self.gpencil_data = self.__create()
         data.gpencil_object = self.object
+        self.materials = {}
         self.brush = self.setup_brush()
         self.set_materials()
 
@@ -66,8 +67,8 @@ class GPencil:
             self.materials[stroke] = marker
             self.gpencil_data.materials.append(stroke)
         
-        if data.erase_material is not None:
-            self.gpencil_data.materials.append(data.erase_material)
+        if data.config_data.erase_material is not None:
+            self.gpencil_data.materials.append(data.config_data.erase_material)
 
     def set_object_active(self):
         bpy.context.view_layer.objects.active = self.object

@@ -1,12 +1,11 @@
 import bpy
 
-# TODO: put into config/preferences
-TILE_SIZE = 2
+from .config import data
 
 class TileMarker:
     def __init__(self, location, material):
         bpy.ops.mesh.primitive_cube_add(location=location)
-        bpy.ops.transform.resize(value=(TILE_SIZE / 2, TILE_SIZE / 2, 10))
+        bpy.ops.transform.resize(value=(data.config_data.tile_size / 2, data.config_data.tile_size / 2, 10))
 
         self.object = bpy.context.object
         self.object.data.materials.clear()

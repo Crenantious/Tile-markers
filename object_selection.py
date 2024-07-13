@@ -1,8 +1,7 @@
 import bpy
 from bpy_extras import view3d_utils
 from . import tile_marker
-
-TILE_SIZE = 2
+from .config import data
 
 def raycast_gpencil_points(gpencil):
     gp_points_exist = False
@@ -47,19 +46,18 @@ def handle_selected_objects(gpencil, map_locations, tile_markers):
     if stroke_material is None:
         return
 
-    tile_marker_material = stroke_material.tile_marker_material
-    if tile_marker_material is not None:
-        if stroke_material == gpencil.erase_material:
-            delete_objects(tile_markers)
-        else:
-            tile_marker.create_markers(map_locations, tile_marker_material)
+    if stroke_material == data.config_data.erase_material:
+        delete_objects(tile_markers)
 
-        bpy.context.view_layer.objects.active = gpencil.object
-        bpy.ops.object.mode_set(mode='PAINT_GPENCIL')
+    if stroke_material in gpencil.materials:
+        tile_marker_material = gpencil.materials[stroke_material]
+        tile_marker.create_markers(map_locations, tile_marker_material)
+
+    bpy.context.view_layer.objects.active = gpencil.object
+    bpy.ops.object.mode_set(mode='PAINT_GPENCIL')
 
 def get_nearest_tile_vertex(vertex):
-    return (int(vertex / TILE_SIZE) + 0.5) * TILE_SIZE
-
+    return (int(vertex / data.config_data.tile_size) + 0.5) * data.config_data.tile_size
 
 def get_nearest_tile(pos):
     return get_nearest_tile_vertex(pos.x), get_nearest_tile_vertex(pos.y), get_nearest_tile_vertex(pos.z)

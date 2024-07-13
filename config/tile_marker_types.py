@@ -1,16 +1,19 @@
-import bpy
+from . import data
+
+def init():
+    data.add_property("marker_types", lambda: TileMarkerTypes())
 
 class Index:
     @property
     def value(self):
-        return bpy.context.scene.marker_types_index
+        return data.config_data.marker_types_index
 
     def set(self, value):
-        bpy.context.scene.marker_types_index = value
+        data.config_data.marker_types_index = value
 
     @property
     def max(self):
-        return max(0, len(bpy.context.scene.marker_types) - 1)
+        return max(0, len(data.config_data.marker_types) - 1)
 
     def increment(self):
         self.set(self.value + 1)
@@ -35,7 +38,7 @@ class TileMarkerTypes:
 
     @property
     def types(self):
-        return bpy.context.scene.marker_types
+        return data.config_data.marker_types
     
     @property
     def index(self):

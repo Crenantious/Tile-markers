@@ -13,14 +13,15 @@ class TileMarkerTypesPanel(bpy.types.Panel):
     def draw(self, context):
         layout = self.layout
         row = layout.row()
-        row.template_list("Material_UI_LIST", "", bpy.context.scene, "marker_types", bpy.context.scene, "marker_types_index")
+        row.template_list("Material_UI_LIST", "", data.config_data, "marker_types", data.config_data, "marker_types_index")
         column = row.column()
         column.operator(list_operators.AddMarkerType.bl_idname, text="", icon='ADD')
         column.operator(list_operators.RemoveMarkerType.bl_idname, text="", icon='REMOVE')
         column.operator(list_operators.MoveMarkerTypeUp.bl_idname, text="", icon='TRIA_UP')
         column.operator(list_operators.MoveMarkerTypeDown.bl_idname, text="", icon='TRIA_DOWN')
   
-        layout.prop(data.erase_material, 'material', text = "Erase material")
+        layout.prop(data.config_data, 'erase_material', text = "Erase material")
+        layout.prop(data.config_data, 'tile_size', text = "Tile size")
 
 class Material_UI_LIST(bpy.types.UIList):
     def draw_item(self, context, layout, data, item, icon, active_data, active_propname, index):

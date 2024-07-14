@@ -1,4 +1,5 @@
 import bpy
+import bmesh
 
 from .config import data
 
@@ -23,14 +24,15 @@ class TileMarker:
 
     def delete_excess_verts(self):
         # TODO: Not sure why but removing these causes some extra verticies to be deleted.
-        bpy.ops.object.mode_set(mode='EDIT')
-        bpy.ops.mesh.select_all(action='DESELECT')
-        bpy.ops.object.mode_set(mode='OBJECT')
-        for vert in self.object.data.vertices:
-            if vert.co[2] * 10 + self.object.location[2] < -0.01:  # Under floor
-                vert.select = True
+        bm = bmesh.new()
+        bm.from_mesh(self.object.data)
+        verts_to_delete = []
+
+        for vert in bm.verts:
+            if vert.co.z * 10 + self.object.location.z < -0.01:  # Under floor
+                verts_to_delete.append(vert)
             vert.co += vert.normal * 0.001  # Scale slightly to avoid some clipping (fails for complex geometry)
 
-        bpy.ops.object.mode_set(mode='EDIT')
-        bpy.ops.mesh.delete(type='VERT')
-        bpy.ops.object.mode_set(mode='OBJECT')
+        bmesh.ops.delete(bm, geom = verts_to_delete, context = 'VERTS')
+        bm.to_mesh(self.object.data)
+        bm.free()
